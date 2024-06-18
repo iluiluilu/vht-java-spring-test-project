@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  springdb:
+    image: mysql:8.0
+    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - 3309:3306
+    volumes:
+      - ./init-db:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_ROOT_PASSWORD: 123456
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1024M
+        reservations:
+          cpus: '0.5'
+          memory: 1024M
+
+#  springapp:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - 6075:6075
+#    volumes:
+#      - ./benchmark-result:/app/benchmark-result
+#    depends_on:
+#      - springdb
+#      - springcache
+  springcache:
+    image: redis:latest
+    ports:
+      - 6377:6379
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1024M
+        reservations:
+          cpus: '0.5'
+          memory: 1024M
